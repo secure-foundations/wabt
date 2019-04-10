@@ -33,7 +33,7 @@
 #include "src/string-view.h"
 
 #define PRINT_HEADER_NO_INDEX -1
-#define MAX_U32_LEB128_BYTES 5
+#define MAX_U32_LEB128_BYTES 4
 
 namespace wabt {
 
