@@ -213,6 +213,7 @@ WABT_OPCODE(I32,  F32,  ___,  ___,  0,  0,    0xbc, I32ReinterpretF32, "i32.rein
 WABT_OPCODE(I64,  F64,  ___,  ___,  0,  0,    0xbd, I64ReinterpretF64, "i64.reinterpret_f64")
 WABT_OPCODE(F32,  I32,  ___,  ___,  0,  0,    0xbe, F32ReinterpretI32, "f32.reinterpret_i32")
 WABT_OPCODE(F64,  I64,  ___,  ___,  0,  0,    0xbf, F64ReinterpretI64, "f64.reinterpret_i64")
+WABT_OPCODE(___,  ___,  ___,  ___,  0,  0,    0xff, EndBlk, "end contiguous instructions")
 
 /* Sign-extension opcodes (--enable-sign-extension) */
 WABT_OPCODE(I32,  I32,  ___,  ___,  0,  0,    0xC0, I32Extend8S, "i32.extend8_s")
