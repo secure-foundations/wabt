@@ -831,7 +831,7 @@ Result BinaryWriter::WriteModule() {
   stream_->WriteU32(WABT_BINARY_MAGIC, "WASM_BINARY_MAGIC");
   stream_->WriteU32(WABT_BINARY_VERSION, "WASM_BINARY_VERSION");
 
-  if (module_->func_types.size()) {
+  //if (module_->func_types.size()) {
     BeginKnownSection(BinarySection::Type);
     WriteU32Leb128(stream_, module_->func_types.size(), "num types");
     for (size_t i = 0; i < module_->func_types.size(); ++i) {
@@ -853,9 +853,9 @@ Result BinaryWriter::WriteModule() {
       }
     }
     EndSection();
-  }
+  //}
 
-  if (module_->imports.size()) {
+  //if (module_->imports.size()) {
     BeginKnownSection(BinarySection::Import);
     WriteU32Leb128(stream_, module_->imports.size(), "num imports");
 
@@ -893,11 +893,11 @@ Result BinaryWriter::WriteModule() {
       }
     }
     EndSection();
-  }
+  //}
 
   assert(module_->funcs.size() >= module_->num_func_imports);
   Index num_funcs = module_->funcs.size() - module_->num_func_imports;
-  if (num_funcs) {
+  //if (num_funcs) {
     BeginKnownSection(BinarySection::Function);
     WriteU32Leb128(stream_, num_funcs, "num functions");
 
@@ -909,11 +909,11 @@ Result BinaryWriter::WriteModule() {
       WriteU32Leb128(stream_, module_->GetFuncTypeIndex(func->decl), desc);
     }
     EndSection();
-  }
+  //}
 
   assert(module_->tables.size() >= module_->num_table_imports);
   Index num_tables = module_->tables.size() - module_->num_table_imports;
-  if (num_tables) {
+  //if (num_tables) {
     BeginKnownSection(BinarySection::Table);
     WriteU32Leb128(stream_, num_tables, "num tables");
     for (size_t i = 0; i < num_tables; ++i) {
@@ -922,11 +922,11 @@ Result BinaryWriter::WriteModule() {
       WriteTable(table);
     }
     EndSection();
-  }
+  //
 
   assert(module_->memories.size() >= module_->num_memory_imports);
   Index num_memories = module_->memories.size() - module_->num_memory_imports;
-  if (num_memories) {
+  //if (num_memories) {
     BeginKnownSection(BinarySection::Memory);
     WriteU32Leb128(stream_, num_memories, "num memories");
     for (size_t i = 0; i < num_memories; ++i) {
@@ -935,11 +935,11 @@ Result BinaryWriter::WriteModule() {
       WriteMemory(memory);
     }
     EndSection();
-  }
+  //}
 
   assert(module_->globals.size() >= module_->num_global_imports);
   Index num_globals = module_->globals.size() - module_->num_global_imports;
-  if (num_globals) {
+  //if (num_globals) {
     BeginKnownSection(BinarySection::Global);
     WriteU32Leb128(stream_, num_globals, "num globals");
 
@@ -949,11 +949,11 @@ Result BinaryWriter::WriteModule() {
       WriteInitExpr(global->init_expr);
     }
     EndSection();
-  }
+  //}
 
   assert(module_->events.size() >= module_->num_event_imports);
   Index num_events = module_->events.size() - module_->num_event_imports;
-  if (num_events) {
+  //if (num_events) {
     BeginKnownSection(BinarySection::Event);
     WriteU32Leb128(stream_, num_events, "event count");
     for (size_t i = 0; i < num_events; ++i) {
@@ -962,9 +962,9 @@ Result BinaryWriter::WriteModule() {
       WriteEventType(event);
     }
     EndSection();
-  }
+  //}
 
-  if (module_->exports.size()) {
+  //if (module_->exports.size()) {
     BeginKnownSection(BinarySection::Export);
     WriteU32Leb128(stream_, module_->exports.size(), "num exports");
 
@@ -1000,7 +1000,7 @@ Result BinaryWriter::WriteModule() {
       }
     }
     EndSection();
-  }
+  //}
 
   if (module_->starts.size()) {
     Index start_func_index = module_->GetFuncIndex(*module_->starts[0]);
@@ -1009,9 +1009,14 @@ Result BinaryWriter::WriteModule() {
       WriteU32Leb128(stream_, start_func_index, "start func index");
       EndSection();
     }
+  } else {
+    BeginKnownSection(BinarySection::Start);
+    WriteU32Leb128(stream_, 0, "start func index");
+    EndSection();
   }
+  
 
-  if (module_->elem_segments.size()) {
+  //if (module_->elem_segments.size()) {
     BeginKnownSection(BinarySection::Elem);
     WriteU32Leb128(stream_, module_->elem_segments.size(), "num elem segments");
     for (size_t i = 0; i < module_->elem_segments.size(); ++i) {
@@ -1032,15 +1037,15 @@ Result BinaryWriter::WriteModule() {
       }
     }
     EndSection();
-  }
-
+  //}
+/*
   if (options_.features.bulk_memory_enabled()) {
     BeginKnownSection(BinarySection::DataCount);
     WriteU32Leb128(stream_, module_->data_segments.size(), "data count");
     EndSection();
   }
-
-  if (num_funcs) {
+*/
+  //if (num_funcs) {
     BeginKnownSection(BinarySection::Code);
     WriteU32Leb128(stream_, num_funcs, "num functions");
 
@@ -1057,9 +1062,9 @@ Result BinaryWriter::WriteModule() {
                               "FIXUP func body size");
     }
     EndSection();
-  }
+  //}
 
-  if (module_->data_segments.size()) {
+  //if (module_->data_segments.size()) {
     BeginKnownSection(BinarySection::Data);
     WriteU32Leb128(stream_, module_->data_segments.size(), "num data segments");
     for (size_t i = 0; i < module_->data_segments.size(); ++i) {
@@ -1077,7 +1082,7 @@ Result BinaryWriter::WriteModule() {
       stream_->WriteData(segment->data, "data segment data");
     }
     EndSection();
-  }
+  //}
 
   if (options_.write_debug_names) {
     std::vector<std::string> index_to_name;
