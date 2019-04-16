@@ -20,8 +20,8 @@
 
 #include "src/stream.h"
 
-#define MAX_U32_LEB128_BYTES 5
-#define MAX_U64_LEB128_BYTES 10
+#define MAX_U32_LEB128_BYTES 4
+#define MAX_U64_LEB128_BYTES 8
 
 namespace wabt {
 
@@ -50,17 +50,17 @@ Offset WriteFixedU32Leb128At(Stream* stream,
                              Offset offset,
                              uint32_t value,
                              const char* desc) {
-  uint8_t data[MAX_U32_LEB128_BYTES];
-  Offset length =
-      WriteFixedU32Leb128Raw(data, data + MAX_U32_LEB128_BYTES, value);
+  uint8_t data[MAX_U32_LEB128_BYTES];                             
+  *((uint32_t*)data) = value;
+  Offset length = MAX_U32_LEB128_BYTES;     
   stream->WriteDataAt(offset, data, length, desc);
   return length;
 }
 
 void WriteU32Leb128(Stream* stream, uint32_t value, const char* desc) {
   uint8_t data[MAX_U32_LEB128_BYTES];
-  Offset length = 0;
-  LEB128_LOOP_UNTIL(value == 0);
+  *((uint32_t*)data) = value;
+  Offset length = MAX_U32_LEB128_BYTES; 
   stream->WriteData(data, length, desc);
 }
 
@@ -77,19 +77,16 @@ Offset WriteU32Leb128At(Stream* stream,
                         uint32_t value,
                         const char* desc) {
   uint8_t data[MAX_U32_LEB128_BYTES];
-  Offset length = 0;
-  LEB128_LOOP_UNTIL(value == 0);
+  Offset length = 4;
+  *((uint32_t*)data) = value;
   stream->WriteDataAt(offset, data, length, desc);
   return length;
 }
 
 Offset WriteU32Leb128Raw(uint8_t* dest, uint8_t* dest_end, uint32_t value) {
   uint8_t data[MAX_U32_LEB128_BYTES];
-  Offset length = 0;
-  LEB128_LOOP_UNTIL(value == 0);
-  if (static_cast<Offset>(dest_end - dest) < length) {
-    return 0;
-  }
+  *((uint32_t*)data) = value;
+  Offset length = MAX_U32_LEB128_BYTES; 
   memcpy(dest, data, length);
   return length;
 }
@@ -98,34 +95,23 @@ Offset WriteFixedU32Leb128Raw(uint8_t* data, uint8_t* end, uint32_t value) {
   if (end - data < MAX_U32_LEB128_BYTES) {
     return 0;
   }
-  data[0] = (value & 0x7f) | 0x80;
-  data[1] = ((value >> 7) & 0x7f) | 0x80;
-  data[2] = ((value >> 14) & 0x7f) | 0x80;
-  data[3] = ((value >> 21) & 0x7f) | 0x80;
-  data[4] = ((value >> 28) & 0x0f);
+  *((uint32_t*)data) = value;
+  Offset length = MAX_U32_LEB128_BYTES; 
   return MAX_U32_LEB128_BYTES;
 }
 
 static void WriteS32Leb128(Stream* stream, int32_t value, const char* desc) {
   uint8_t data[MAX_U32_LEB128_BYTES];
-  Offset length = 0;
-  if (value < 0) {
-    LEB128_LOOP_UNTIL(value == -1 && (byte & 0x40));
-  } else {
-    LEB128_LOOP_UNTIL(value == 0 && !(byte & 0x40));
-  }
+  *((int32_t*)data) = value;
+  Offset length = MAX_U32_LEB128_BYTES; 
 
   stream->WriteData(data, length, desc);
 }
 
 static void WriteS64Leb128(Stream* stream, int64_t value, const char* desc) {
   uint8_t data[MAX_U64_LEB128_BYTES];
-  Offset length = 0;
-  if (value < 0) {
-    LEB128_LOOP_UNTIL(value == -1 && (byte & 0x40));
-  } else {
-    LEB128_LOOP_UNTIL(value == 0 && !(byte & 0x40));
-  }
+  *((int64_t*)data) = value;
+  Offset length = MAX_U64_LEB128_BYTES; 
 
   stream->WriteData(data, length, desc);
 }

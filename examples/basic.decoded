@@ -1,0 +1,35 @@
+
+basic.wasm:
+
+00000000  00 61 73 6d 01 00 00 00  01         05        01     60         00                  01          7f    03  
+         |-- magic --|--version--|TypeSec|sec_len | vec_len | FuncType | input_type_len | out_type_len | i32 | FuncSec 
+
+00000010  02       01       00      | 0a         07        01         05          00                41         2a        0f   0b              
+         |sec_len| vec_len| typeidx | CodeSec  | sec_len | vec_len | code_size | vec_len(locals) | i32.const | val 42 | ret | End of expression
+0000001c
+
+basic.vasm v1:
+00000000  00 61 73 6d 01 00 00 00  01      14 00 00 00  01 00 00  
+         |-- magic --|--version--|TypeSec| sec_len    |--vec_len --
+00000010  00 e0 ff ff ff 00 00 00  00 01 00 00 00 ff ff ff  
+         ---| ???
+00000020  ff 03       08 00 00 00 01 00  00 00 00 00 00 00 0a        13  
+            |FuncSec |--sec_len--|--vec_len---|--typeidx--|CodeSec| sec_len (19 bytes)-
+00000030  00 00 00 01 00 00 00 0b  00 00 00 00 00 00 00        41  
+         -------- |--vec_len--|code_size   | vec_len(locals) | i32.cosnt
+00000040  2a 00 00 00 0f   0b                                 
+         |-- val 42--|ret| End of expression
+00000046
+
+basic.vasm v2:
+0000000 00 61 73 6d 01 00 00 00 01       0e 00 00 00 01 00 00
+       |-- magic --|--version--|TypeSec| sec_len    |--vec_len --
+
+0000010 00 60       00 00 00 00     01 00 00 00  7f  03       08 00 00 00
+       ---|FuncType| input_type_len|out_type_len|i32|FuncSec|sec_len
+0000020 01 00 00 00 00 00 00 00 0a      13 00 00 00 01 00 00
+       |vec_len    | typeidx   |CodeSec|sec_len    |vec_len--
+0000030 00 0b 00 00 00 00 00 00 00    41        2a 00 00 00 0f    0b
+       ---|code_size  |vec_len(local)|i32.const|val 42     |ret| End of expression
+0000040
+

@@ -33,7 +33,7 @@
 #include "src/string-view.h"
 
 #define PRINT_HEADER_NO_INDEX -1
-#define MAX_U32_LEB128_BYTES 5
+#define MAX_U32_LEB128_BYTES 4
 
 namespace wabt {
 
@@ -55,7 +55,8 @@ void WriteOpcode(Stream* stream, Opcode opcode) {
 }
 
 void WriteType(Stream* stream, Type type) {
-  WriteS32Leb128(stream, type, GetTypeName(type));
+  //WriteS32Leb128(stream, type, GetTypeName(type));
+  stream->WriteU8((uint32_t)type, GetTypeName(type));
 }
 
 void WriteLimits(Stream* stream, const Limits* limits) {
@@ -839,6 +840,7 @@ Result BinaryWriter::WriteModule() {
       const FuncSignature* sig = &func_type->sig;
       WriteHeader("type", i);
       WriteType(stream_, Type::Func);
+
 
       Index num_params = sig->param_types.size();
       Index num_results = sig->result_types.size();

@@ -39,7 +39,7 @@ struct WriteBinaryOptions {
         write_debug_names(write_debug_names) {}
 
   Features features;
-  bool canonicalize_lebs = true;
+  bool canonicalize_lebs = false;  // All lebs take a fixed number of bytes
   bool relocatable = false;
   bool write_debug_names = false;
 };
