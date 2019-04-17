@@ -247,6 +247,7 @@ void BinaryWriter::WriteSectionHeader(const char* desc,
                                       BinarySection section_code) {
   assert(last_section_leb_size_guess_ == 0);
   WriteHeader(desc, PRINT_HEADER_NO_INDEX);
+  stream_->WriteU8Enum(0x01, "section present");
   stream_->WriteU8Enum(section_code, "section code");
   last_section_type_ = section_code;
   last_section_leb_size_guess_ = LEB_SECTION_SIZE_GUESS;
@@ -870,6 +871,8 @@ Result BinaryWriter::WriteModule() {
       }
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   if (module_->imports.size()) {
@@ -910,6 +913,8 @@ Result BinaryWriter::WriteModule() {
       }
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   assert(module_->funcs.size() >= module_->num_func_imports);
@@ -926,6 +931,8 @@ Result BinaryWriter::WriteModule() {
       WriteU32Leb128(stream_, module_->GetFuncTypeIndex(func->decl), desc);
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   assert(module_->tables.size() >= module_->num_table_imports);
@@ -939,6 +946,8 @@ Result BinaryWriter::WriteModule() {
       WriteTable(table);
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   assert(module_->memories.size() >= module_->num_memory_imports);
@@ -952,6 +961,8 @@ Result BinaryWriter::WriteModule() {
       WriteMemory(memory);
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   assert(module_->globals.size() >= module_->num_global_imports);
@@ -966,6 +977,8 @@ Result BinaryWriter::WriteModule() {
       WriteInitExpr(global->init_expr);
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   assert(module_->events.size() >= module_->num_event_imports);
@@ -979,6 +992,8 @@ Result BinaryWriter::WriteModule() {
       WriteEventType(event);
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   if (module_->exports.size()) {
@@ -1017,6 +1032,8 @@ Result BinaryWriter::WriteModule() {
       }
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   if (module_->starts.size()) {
@@ -1026,6 +1043,8 @@ Result BinaryWriter::WriteModule() {
       WriteU32Leb128(stream_, start_func_index, "start func index");
       EndSection();
     }
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   if (module_->elem_segments.size()) {
@@ -1049,6 +1068,8 @@ Result BinaryWriter::WriteModule() {
       }
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   if (options_.features.bulk_memory_enabled()) {
@@ -1074,6 +1095,8 @@ Result BinaryWriter::WriteModule() {
                               "FIXUP func body size");
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   if (module_->data_segments.size()) {
@@ -1094,6 +1117,8 @@ Result BinaryWriter::WriteModule() {
       stream_->WriteData(segment->data, "data segment data");
     }
     EndSection();
+  } else {
+    stream_->WriteU8Enum(0x00, "section absent");
   }
 
   if (options_.write_debug_names) {
