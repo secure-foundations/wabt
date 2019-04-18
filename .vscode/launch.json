@@ -4,6 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
+        {
+            "name": "(lldb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/wasm2wat",
+            "args": ["-o", "libwasm_test.wat", "libwasm_test.wasm"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/examples",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "lldb"
+        },
         {
             "name": "clang++ build and debug active file",
             "type": "cppdbg",
