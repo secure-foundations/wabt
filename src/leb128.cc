@@ -47,21 +47,21 @@ Offset U32Leb128Length(uint32_t value) {
   } while (1)
 
 void WriteLEUint32(uint8_t* array, uint32_t val) {
-  array[0] = val;
-  array[1] = val >> 8;
-  array[2] = val >> 16;
-  array[3] = val >> 24;
+  array[3] = val;
+  array[2] = val >> 8;
+  array[1] = val >> 16;
+  array[0] = val >> 24;
 }
 
 void WriteLEUint64(uint8_t* array, uint64_t val) {
-  array[0] = val;
-  array[1] = val >> 8;
-  array[2] = val >> 16;
-  array[3] = val >> 24;
-  array[4] = val >> 32;
-  array[5] = val >> 40;
-  array[6] = val >> 48;
-  array[7] = val >> 56;
+  array[7] = val;
+  array[6] = val >> 8;
+  array[5] = val >> 16;
+  array[4] = val >> 24;
+  array[3] = val >> 32;
+  array[2] = val >> 40;
+  array[1] = val >> 48;
+  array[0] = val >> 56;
 }
 
 Offset WriteFixedU32Leb128At(Stream* stream,

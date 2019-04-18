@@ -27,9 +27,27 @@ basic.vasm v2:
 
 0000010 00 60       00 00 00 00     01 00 00 00  7f  03       08 00 00 00
        ---|FuncType| input_type_len|out_type_len|i32|FuncSec|sec_len
+
 0000020 01 00 00 00 00 00 00 00 0a      13 00 00 00 01 00 00
        |vec_len    | typeidx   |CodeSec|sec_len    |vec_len--
 0000030 00 0b 00 00 00 00 00 00 00    41        2a 00 00 00 0f    0b
        ---|code_size  |vec_len(local)|i32.const|val 42     |ret| End of expression
 0000040
+
+basic.vasm v3 (optional sections)
+00000000  00 61 73 6d 01 00 00 00  01      01        00 00 00 0e 00 00  
+         |-- magic --|--version--|present | TypeSec| sec_len----|--vec_len --
+
+00000010  00 01 60       00 00 00 00    00  00 00 01 7f  00           01        03     00  
+         ------|FuncType|input_type_len|out_type_len|i32|NoImportSec| present| FuncSec|sec_len--
+
+00000020  00 00 08 00 00 00 01 00  00 00 00 00         00       00          00          00  
+         ---------|vec_len    |typeidx     |NoTableSec|NoMemSec|NoGlobalSec|NoExportSec|NoStartSec
+
+00000030  00        00   01      0a       00 00 00 16  00 00 00 01 00 00 00 0e  
+         |NoElemSec| ?? |present|CodeSec |sec_len     |vec_len    |code_size  |
+
+00000040  00 00 00 00     00 00 00 02  41       00 00 00 2a 0f   00     
+         |vec_len(local)| # of instrs|i32.const| val 42     |ret| NoDataSec
+0000004f
 

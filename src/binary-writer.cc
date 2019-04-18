@@ -980,7 +980,7 @@ Result BinaryWriter::WriteModule() {
   } else {
     stream_->WriteU8Enum(0x00, "section absent");
   }
-
+/*  We don't currently support events, so don't even write out an absent flag
   assert(module_->events.size() >= module_->num_event_imports);
   Index num_events = module_->events.size() - module_->num_event_imports;
   if (num_events) {
@@ -995,7 +995,7 @@ Result BinaryWriter::WriteModule() {
   } else {
     stream_->WriteU8Enum(0x00, "section absent");
   }
-
+*/
   if (module_->exports.size()) {
     BeginKnownSection(BinarySection::Export);
     WriteU32Leb128(stream_, module_->exports.size(), "num exports");
