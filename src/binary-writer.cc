@@ -1108,13 +1108,17 @@ Result BinaryWriter::WriteModule() {
     for (size_t i = 0; i < module_->data_segments.size(); ++i) {
       const DataSegment* segment = module_->data_segments[i];
       WriteHeader("data segment header", i);
+      /* 
       if (segment->passive) {
         stream_->WriteU8(static_cast<uint8_t>(SegmentFlags::Passive));
+        assert(false);  // Shouldn't reach this case
       } else {
         assert(module_->GetMemoryIndex(segment->memory_var) == 0);
-        stream_->WriteU8(static_cast<uint8_t>(SegmentFlags::IndexZero));
+        //stream_->WriteU8(static_cast<uint8_t>(SegmentFlags::IndexZero));
         WriteInitExpr(segment->offset);
-      }
+      }*/
+      WriteU32Leb128(stream_, module_->GetMemoryIndex(segment->memory_var), "memidx");
+      WriteInitExpr(segment->offset);
       WriteU32Leb128(stream_, segment->data.size(), "data segment size");
       WriteHeader("data segment data", i);
       stream_->WriteData(segment->data, "data segment data");
