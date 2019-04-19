@@ -1054,11 +1054,13 @@ Result BinaryWriter::WriteModule() {
     for (size_t i = 0; i < module_->elem_segments.size(); ++i) {
       ElemSegment* segment = module_->elem_segments[i];
       WriteHeader("elem segment header", i);
+      WriteU32Leb128(stream_, module_->GetTableIndex(segment->table_var), "table index");
       if (segment->passive) {
-        stream_->WriteU8(static_cast<uint8_t>(SegmentFlags::Passive));
+        //stream_->WriteU8(static_cast<uint8_t>(SegmentFlags::Passive));
+        assert(false);  // We shouldn't hit this case
       } else {
         assert(module_->GetTableIndex(segment->table_var) == 0);
-        stream_->WriteU8(static_cast<uint8_t>(SegmentFlags::IndexZero));
+        //stream_->WriteU8(static_cast<uint8_t>(SegmentFlags::IndexZero));
         WriteInitExpr(segment->offset);
       }
       WriteU32Leb128(stream_, segment->vars.size(), "num function indices");

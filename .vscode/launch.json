@@ -6,7 +6,7 @@
     "configurations": [
         
         {
-            "name": "(lldb) Launch",
+            "name": "(lldb) Launch - libwasm",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/wasm2wat",
@@ -18,11 +18,11 @@
             "MIMode": "lldb"
         },
         {
-            "name": "clang++ build and debug active file",
+            "name": "clang++ build and debug active file - wat2wasm",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/wat2wasm",
-            "args": ["-o", "basic.vasm", "basic.wat"],
+            "args": ["-o", "trunc_libwasm_test.vasm", "trunc_libwasm_test.wat"],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}/examples",
             "environment": [],
