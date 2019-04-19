@@ -731,8 +731,8 @@ uint32_t BinaryWriter::WriteExprList(const Func* func, const ExprList& exprs) {
 }
 
 void BinaryWriter::WriteInitExpr(const ExprList& expr) {
-  WriteExprList(nullptr, expr);
-  WriteOpcode(stream_, Opcode::End);
+  WriteExprVec(nullptr, expr);
+  //WriteOpcode(stream_, Opcode::End);
 }
 
 void BinaryWriter::WriteFuncLocals(const Func* func,
