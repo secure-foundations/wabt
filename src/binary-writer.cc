@@ -586,11 +586,13 @@ uint32_t BinaryWriter::WriteExpr(const Func* func, const Expr* expr) {
     }
     case ExprType::MemoryFill:
       WriteOpcode(stream_, Opcode::MemoryFill);
-      WriteU32Leb128(stream_, 0, "memory.fill reserved");
+      //WriteU32Leb128(stream_, 0, "memory.fill reserved");
+      stream_->WriteU8(0,"memory.fill reserved");
       break;
     case ExprType::MemoryGrow:
       WriteOpcode(stream_, Opcode::MemoryGrow);
-      WriteU32Leb128(stream_, 0, "memory.grow reserved");
+      //WriteU32Leb128(stream_, 0, "memory.grow reserved");
+      stream_->WriteU8(0, "memory.grow reserved");
       break;
     case ExprType::MemoryInit: {
       Index index =
@@ -602,7 +604,8 @@ uint32_t BinaryWriter::WriteExpr(const Func* func, const Expr* expr) {
     }
     case ExprType::MemorySize:
       WriteOpcode(stream_, Opcode::MemorySize);
-      WriteU32Leb128(stream_, 0, "memory.size reserved");
+      //WriteU32Leb128(stream_, 0, "memory.size reserved");
+      stream_->WriteU8(0, "memory.size reserved");
       break;
     case ExprType::TableCopy:
       WriteOpcode(stream_, Opcode::TableCopy);
