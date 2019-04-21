@@ -380,7 +380,8 @@ void BinaryWriter::WriteLoadStoreExpr(const Func* func,
   auto* typed_expr = cast<T>(expr);
   WriteOpcode(stream_, typed_expr->opcode);
   Address align = typed_expr->opcode.GetAlignment(typed_expr->align);
-  stream_->WriteU8(log2_u32(align), "alignment");
+  //tream_->WriteU8(log2_u32(align), "alignment");
+  WriteU32Leb128(stream_, log2_u32(align), "alignment");
   WriteU32Leb128(stream_, typed_expr->offset, desc);
 }
 
