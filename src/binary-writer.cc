@@ -462,11 +462,12 @@ uint32_t BinaryWriter::WriteExpr(const Func* func, const Expr* expr) {
     case ExprType::CallIndirect:{
       Index sig_index =
         module_->GetFuncTypeIndex(cast<CallIndirectExpr>(expr)->decl);
-      Index table_index =
-        module_->GetTableIndex(cast<CallIndirectExpr>(expr)->table);
+      //Index table_index =
+      //  module_->GetTableIndex(cast<CallIndirectExpr>(expr)->table);
       WriteOpcode(stream_, Opcode::CallIndirect);
       WriteU32Leb128WithReloc(sig_index, "signature index", RelocType::TypeIndexLEB);
-      WriteU32Leb128(stream_, table_index, "table index");
+      //WriteU32Leb128(stream_, table_index, "table index");
+      stream_->WriteU8(0, "Table index for future usage");
       break;
     }
     case ExprType::ReturnCallIndirect: {

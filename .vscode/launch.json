@@ -22,7 +22,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/wat2wasm",
-            "args": ["-o", "trunc_libwasm_test.vasm", "trunc_libwasm_test.wat"],
+            "args": ["-o", "loop.vasm", "loop.wat"],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}/examples",
             "environment": [],
