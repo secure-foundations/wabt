@@ -116,7 +116,12 @@ class BinaryWriter {
 
  private:
   void WriteHeader(const char* name, int index);
+  Offset WriteU24Leb128Space(Offset leb_size_guess,
+                             const char* desc);
   Offset WriteU32Leb128Space(Offset leb_size_guess, const char* desc);
+  Offset WriteFixupU24Leb128Size(Offset offset,
+                                 Offset leb_size_guess,
+                                 const char* desc);   
   Offset WriteFixupU32Leb128Size(Offset offset,
                                  Offset leb_size_guess,
                                  const char* desc);
@@ -204,6 +209,44 @@ Offset BinaryWriter::WriteU32Leb128Space(Offset leb_size_guess,
       options_.canonicalize_lebs ? leb_size_guess : MAX_U32_LEB128_BYTES;
   stream_->WriteData(data, bytes_to_write, desc);
   return result;
+}
+
+/* returns offset of leb128 */
+Offset BinaryWriter::WriteU24Leb128Space(Offset leb_size_guess,
+                                         const char* desc) {
+  assert(leb_size_guess <= MAX_U32_LEB128_BYTES);
+  uint8_t data[MAX_U32_LEB128_BYTES-1] = {0};
+  Offset result = stream_->offset();
+  Offset bytes_to_write =
+      options_.canonicalize_lebs ? leb_size_guess : MAX_U32_LEB128_BYTES - 1;
+  stream_->WriteData(data, bytes_to_write, desc);
+  return result;
+}
+
+Offset BinaryWriter::WriteFixupU24Leb128Size(Offset offset,
+                                             Offset leb_size_guess,
+                                             const char* desc) {
+  if (options_.canonicalize_lebs) {
+    // We don't plan to support this case
+    assert(false);
+    /*
+    Offset size = stream_->offset() - offset - leb_size_guess;
+    Offset leb_size = U32Leb128Length(size);
+    Offset delta = leb_size - leb_size_guess;
+    if (delta != 0) {
+      Offset src_offset = offset + leb_size_guess;
+      Offset dst_offset = offset + leb_size;
+      stream_->MoveData(dst_offset, src_offset, size);
+    }
+    WriteU32Leb128At(stream_, offset, size, desc);
+    stream_->AddOffset(delta);
+    return delta;
+    */
+  } else {
+    Offset size = stream_->offset() - offset - (MAX_U32_LEB128_BYTES - 1);
+    WriteFixedU24Leb128At(stream_, offset, size, desc);
+    return 0;
+  }
 }
 
 Offset BinaryWriter::WriteFixupU32Leb128Size(Offset offset,
@@ -722,9 +765,12 @@ uint32_t BinaryWriter::WriteExpr(const Func* func, const Expr* expr) {
 
 void BinaryWriter::WriteExprVec(const Func* func, const ExprList& exprs) {
   Offset vec_size_offset =
-          WriteU32Leb128Space(4, "expr count (guess)");
-  uint32_t expr_count = WriteExprList(func, exprs);
-  WriteFixedU32Leb128At(stream_, vec_size_offset, expr_count, "FIXUP expr count");
+          WriteU24Leb128Space(MAX_U32_LEB128_BYTES, "expr size (guess)");
+  //uint32_t expr_count = WriteExprList(func, exprs);
+  //WriteFixedU32Leb128At(stream_, vec_size_offset, expr_count, "FIXUP expr count");
+  WriteExprList(func, exprs);
+  WriteFixupU24Leb128Size(
+      vec_size_offset, MAX_U32_LEB128_BYTES, "FIXUP expr size");
 }
 
 uint32_t BinaryWriter::WriteExprList(const Func* func, const ExprList& exprs) {

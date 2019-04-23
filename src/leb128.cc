@@ -46,6 +46,12 @@ Offset U32Leb128Length(uint32_t value) {
     }                               \
   } while (1)
 
+void WriteLEUint24(uint8_t* array, uint32_t val) {
+  array[2] = val;
+  array[1] = val >> 8;
+  array[0] = val >> 16;
+}
+
 void WriteLEUint32(uint8_t* array, uint32_t val) {
   array[3] = val;
   array[2] = val >> 8;
@@ -72,6 +78,18 @@ Offset WriteFixedU32Leb128At(Stream* stream,
   WriteLEUint32(data, value);                            
   //*reinterpret_cast<uint32_t*>(data) = value;
   Offset length = MAX_U32_LEB128_BYTES;     
+  stream->WriteDataAt(offset, data, length, desc);
+  return length;
+}
+
+Offset WriteFixedU24Leb128At(Stream* stream,
+                             Offset offset,
+                             uint32_t value,
+                             const char* desc) {
+  uint8_t data[MAX_U32_LEB128_BYTES-1]; 
+  WriteLEUint24(data, value);                            
+  //*reinterpret_cast<uint32_t*>(data) = value;
+  Offset length = MAX_U32_LEB128_BYTES-1;     
   stream->WriteDataAt(offset, data, length, desc);
   return length;
 }
